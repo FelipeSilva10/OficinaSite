@@ -1,0 +1,1040 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Oficina do Amanhã — Portal</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:       #0B0F1A;
+    --surface:  #111827;
+    --surface2: #1C2535;
+    --border:   #1E2D45;
+    --blue:     #1A72E8;
+    --blue-dim: #1045A0;
+    --blue-glow:#1A72E8;
+    --orange:   #F5820A;
+    --orange-dim:#7A3D00;
+    --text:     #E8EEF8;
+    --muted:    #6B7FA0;
+    --muted2:   #3A4A65;
+    --green:    #22C55E;
+    --red:      #EF4444;
+    --font-mono: 'Space Mono', monospace;
+    --font-body: 'DM Sans', sans-serif;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: var(--font-body);
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── NOISE OVERLAY ─────────────────────────────────────────── */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none; z-index: 9999;
+    opacity: 0.35;
+  }
+
+  /* ═══════════════════════════════════════════════════════════
+     LOGIN SCREEN
+  ═══════════════════════════════════════════════════════════ */
+  #login-screen {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+
+  .login-bg {
+    position: fixed; inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 20% 50%, rgba(26,114,232,0.12) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 80% at 80% 30%, rgba(245,130,10,0.07) 0%, transparent 50%),
+      var(--bg);
+  }
+
+  .login-grid {
+    position: fixed; inset: 0;
+    background-image:
+      linear-gradient(rgba(26,114,232,0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(26,114,232,0.06) 1px, transparent 1px);
+    background-size: 48px 48px;
+    mask-image: radial-gradient(ellipse 70% 70% at 50% 50%, black 40%, transparent 100%);
+  }
+
+  .login-card {
+    position: relative; z-index: 1;
+    width: 420px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 44px 40px 40px;
+    box-shadow: 0 32px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(26,114,232,0.1);
+    animation: cardIn 0.6s cubic-bezier(.22,1,.36,1) both;
+  }
+
+  @keyframes cardIn {
+    from { opacity: 0; transform: translateY(24px) scale(0.97); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  .login-logo {
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 32px;
+  }
+
+  .login-logo-icon {
+    width: 44px; height: 44px;
+    background: linear-gradient(135deg, var(--blue), var(--blue-dim));
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+    box-shadow: 0 0 20px rgba(26,114,232,0.3);
+  }
+
+  .login-logo-text {
+    display: flex; flex-direction: column;
+  }
+
+  .login-logo-text strong {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    letter-spacing: 0.08em;
+    color: var(--text);
+    line-height: 1;
+  }
+
+  .login-logo-text span {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 3px;
+  }
+
+  .login-title {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 6px;
+    color: var(--text);
+  }
+
+  .login-sub {
+    font-size: 14px;
+    color: var(--muted);
+    margin-bottom: 32px;
+    line-height: 1.5;
+  }
+
+  .field {
+    margin-bottom: 16px;
+  }
+
+  .field label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+
+  .field input {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 14px;
+    font-family: var(--font-body);
+    font-size: 15px;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .field input:focus {
+    border-color: var(--blue);
+    box-shadow: 0 0 0 3px rgba(26,114,232,0.15);
+  }
+
+  .field input::placeholder { color: var(--muted2); }
+
+  #login-error {
+    display: none;
+    background: rgba(239,68,68,0.1);
+    border: 1px solid rgba(239,68,68,0.3);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 13px;
+    color: #FCA5A5;
+    margin-bottom: 16px;
+  }
+
+  .btn-primary {
+    width: 100%;
+    background: var(--blue);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 13px;
+    font-family: var(--font-body);
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
+    box-shadow: 0 4px 16px rgba(26,114,232,0.3);
+    margin-top: 4px;
+  }
+
+  .btn-primary:hover { background: #1560D0; box-shadow: 0 6px 24px rgba(26,114,232,0.45); }
+  .btn-primary:active { transform: scale(0.98); }
+
+  .login-hint {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 12px;
+    color: var(--muted2);
+    font-family: var(--font-mono);
+  }
+
+  /* ═══════════════════════════════════════════════════════════
+     PORTAL (after login)
+  ═══════════════════════════════════════════════════════════ */
+  #portal { display: none; min-height: 100vh; }
+
+  /* ── SIDEBAR ──────────────────────────────────────────────── */
+  .layout {
+    display: flex;
+    min-height: 100vh;
+  }
+
+  .sidebar {
+    width: 240px;
+    flex-shrink: 0;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    padding: 24px 0 20px;
+  }
+
+  .sidebar-logo {
+    display: flex; align-items: center; gap: 10px;
+    padding: 0 20px 24px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 20px;
+  }
+
+  .sidebar-logo-icon {
+    width: 36px; height: 36px;
+    background: linear-gradient(135deg, var(--blue), var(--blue-dim));
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+    box-shadow: 0 0 14px rgba(26,114,232,0.3);
+  }
+
+  .sidebar-logo-text {
+    display: flex; flex-direction: column;
+  }
+
+  .sidebar-logo-text strong {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    line-height: 1;
+  }
+
+  .sidebar-logo-text span {
+    font-size: 10px;
+    color: var(--muted);
+    margin-top: 3px;
+  }
+
+  .sidebar-section-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted2);
+    padding: 0 20px 8px;
+    margin-top: 8px;
+  }
+
+  .nav-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 9px 20px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--muted);
+    cursor: pointer;
+    border-radius: 0;
+    transition: all 0.15s;
+    border-left: 2px solid transparent;
+    text-decoration: none;
+  }
+
+  .nav-item:hover { color: var(--text); background: rgba(255,255,255,0.03); }
+
+  .nav-item.active {
+    color: var(--blue);
+    background: rgba(26,114,232,0.08);
+    border-left-color: var(--blue);
+  }
+
+  .nav-item .icon { font-size: 16px; width: 20px; text-align: center; }
+
+  .sidebar-spacer { flex: 1; }
+
+  .sidebar-user {
+    padding: 16px 20px 0;
+    border-top: 1px solid var(--border);
+    display: flex; align-items: center; gap: 10px;
+  }
+
+  .user-avatar {
+    width: 32px; height: 32px;
+    background: linear-gradient(135deg, var(--orange-dim), var(--orange));
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700;
+    color: #fff; flex-shrink: 0;
+  }
+
+  .user-info { flex: 1; min-width: 0; }
+  .user-info strong { font-size: 13px; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .user-info span { font-size: 11px; color: var(--muted); }
+
+  .btn-logout {
+    background: none; border: none; color: var(--muted); cursor: pointer;
+    font-size: 16px; padding: 4px; transition: color 0.15s;
+  }
+  .btn-logout:hover { color: var(--red); }
+
+  /* ── MAIN ─────────────────────────────────────────────────── */
+  .main {
+    flex: 1;
+    padding: 36px 44px;
+    overflow-y: auto;
+    max-width: calc(100vw - 240px);
+  }
+
+  .page { display: none; animation: fadeUp 0.35s ease both; }
+  .page.active { display: block; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── PAGE HEADER ──────────────────────────────────────────── */
+  .page-header {
+    margin-bottom: 32px;
+  }
+
+  .page-header h1 {
+    font-size: 26px;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+
+  .page-header p {
+    font-size: 15px;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  .tag {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: rgba(26,114,232,0.12);
+    color: #60A5FA;
+    border: 1px solid rgba(26,114,232,0.25);
+    border-radius: 999px;
+    padding: 3px 10px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    margin-bottom: 12px;
+    font-family: var(--font-mono);
+  }
+
+  /* ── DOWNLOAD CARDS ───────────────────────────────────────── */
+  .download-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 20px;
+    margin-bottom: 40px;
+  }
+
+  .download-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 28px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+
+  .download-card:hover {
+    border-color: var(--blue);
+    transform: translateY(-2px);
+  }
+
+  .download-card::before {
+    content: '';
+    position: absolute;
+    top: 0; right: 0;
+    width: 160px; height: 160px;
+    border-radius: 50%;
+    opacity: 0.06;
+    transition: opacity 0.2s;
+  }
+
+  .download-card.code::before  { background: var(--orange); }
+  .download-card.admin::before { background: var(--blue); }
+  .download-card:hover::before { opacity: 0.1; }
+
+  .card-top { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 20px; }
+
+  .card-icon {
+    width: 48px; height: 48px;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; flex-shrink: 0;
+  }
+
+  .code .card-icon  { background: rgba(245,130,10,0.15); }
+  .admin .card-icon { background: rgba(26,114,232,0.15); }
+
+  .card-meta { flex: 1; }
+  .card-meta h2 {
+    font-size: 18px; font-weight: 700;
+    margin-bottom: 4px;
+    font-family: var(--font-mono);
+  }
+
+  .card-meta p { font-size: 13px; color: var(--muted); line-height: 1.5; }
+
+  .card-version {
+    display: inline-flex; align-items: center; gap: 5px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--muted);
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 3px 8px;
+    margin-bottom: 16px;
+  }
+
+  .card-version .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--green);
+    animation: pulse 2s ease infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; } 50% { opacity: 0.4; }
+  }
+
+  .card-specs {
+    display: flex; gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .spec-pill {
+    font-size: 12px; color: var(--muted);
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 4px 10px;
+  }
+
+  .btn-download {
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    border: none; cursor: pointer;
+    font-family: var(--font-body);
+    font-size: 14px; font-weight: 600;
+    transition: all 0.2s;
+    text-decoration: none;
+  }
+
+  .code  .btn-download { background: rgba(245,130,10,0.15); color: #FDBA74; border: 1px solid rgba(245,130,10,0.25); }
+  .admin .btn-download { background: rgba(26,114,232,0.15); color: #93C5FD; border: 1px solid rgba(26,114,232,0.25); }
+  .code  .btn-download:hover { background: rgba(245,130,10,0.25); }
+  .admin .btn-download:hover { background: rgba(26,114,232,0.25); }
+
+  /* ── SYSTEM STATUS ────────────────────────────────────────── */
+  .status-bar {
+    display: flex; gap: 16px;
+    margin-bottom: 40px;
+    flex-wrap: wrap;
+  }
+
+  .status-item {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 16px;
+    font-size: 13px;
+  }
+
+  .status-dot { width: 8px; height: 8px; border-radius: 50%; }
+  .status-dot.green  { background: var(--green); box-shadow: 0 0 6px var(--green); }
+  .status-dot.yellow { background: #FBBF24; box-shadow: 0 0 6px #FBBF24; }
+
+  /* ── CHANGELOG ────────────────────────────────────────────── */
+  .changelog { max-width: 760px; }
+
+  .release {
+    display: flex; gap: 24px;
+    margin-bottom: 36px;
+    position: relative;
+  }
+
+  .release::before {
+    content: '';
+    position: absolute;
+    left: 17px; top: 36px;
+    width: 1px;
+    height: calc(100% + 8px);
+    background: var(--border);
+  }
+
+  .release:last-child::before { display: none; }
+
+  .release-dot {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: var(--surface);
+    border: 2px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; flex-shrink: 0;
+    position: relative; z-index: 1;
+  }
+
+  .release.latest .release-dot {
+    background: rgba(26,114,232,0.1);
+    border-color: var(--blue);
+    box-shadow: 0 0 0 4px rgba(26,114,232,0.08);
+  }
+
+  .release-body { flex: 1; padding-top: 6px; }
+
+  .release-header {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 12px; flex-wrap: wrap;
+  }
+
+  .release-version {
+    font-family: var(--font-mono);
+    font-size: 16px; font-weight: 700;
+    color: var(--text);
+  }
+
+  .release-date {
+    font-size: 12px; color: var(--muted);
+    font-family: var(--font-mono);
+  }
+
+  .badge {
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 0.06em;
+    padding: 2px 8px; border-radius: 4px;
+    font-family: var(--font-mono);
+  }
+
+  .badge.latest  { background: rgba(26,114,232,0.15); color: #60A5FA; border: 1px solid rgba(26,114,232,0.3); }
+  .badge.feature { background: rgba(34,197,94,0.12); color: #86EFAC; border: 1px solid rgba(34,197,94,0.25); }
+  .badge.fix     { background: rgba(251,191,36,0.12); color: #FDE68A; border: 1px solid rgba(251,191,36,0.25); }
+  .badge.admin   { background: rgba(26,114,232,0.12); color: #93C5FD; }
+  .badge.code    { background: rgba(245,130,10,0.12); color: #FDBA74; }
+
+  .release-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px 20px;
+  }
+
+  .release.latest .release-card { border-color: rgba(26,114,232,0.25); }
+
+  .change-section { margin-bottom: 14px; }
+  .change-section:last-child { margin-bottom: 0; }
+
+  .change-section-title {
+    font-size: 11px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.1em;
+    color: var(--muted);
+    margin-bottom: 8px;
+    display: flex; align-items: center; gap: 6px;
+  }
+
+  .change-item {
+    display: flex; align-items: flex-start; gap: 10px;
+    font-size: 14px; line-height: 1.5;
+    color: #CBD5E1;
+    margin-bottom: 5px;
+  }
+
+  .change-item::before {
+    content: '–';
+    color: var(--muted2);
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  /* ── SOBRE ───────────────────────────────────────────────── */
+  .about-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+
+  .about-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 22px;
+  }
+
+  .about-card-icon { font-size: 24px; margin-bottom: 12px; }
+  .about-card h3  { font-size: 15px; font-weight: 700; margin-bottom: 6px; }
+  .about-card p   { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+  .about-stack {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 22px;
+  }
+
+  .about-stack h3 { font-size: 15px; font-weight: 700; margin-bottom: 16px; }
+
+  .stack-row {
+    display: flex; align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+    gap: 12px;
+  }
+
+  .stack-row:last-child { border-bottom: none; }
+  .stack-label { font-size: 12px; color: var(--muted); width: 160px; flex-shrink: 0; }
+  .stack-value { font-size: 13px; font-family: var(--font-mono); color: var(--text); }
+
+  /* ── RESPONSIVE ───────────────────────────────────────────── */
+  @media (max-width: 700px) {
+    .sidebar { display: none; }
+    .main { padding: 24px 20px; max-width: 100vw; }
+    .download-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════════════════
+     LOGIN
+══════════════════════════════════════════════════════════ -->
+<div id="login-screen">
+  <div class="login-bg"></div>
+  <div class="login-grid"></div>
+  <div class="login-card">
+    <div class="login-logo">
+      <div class="login-logo-icon">⚙️</div>
+      <div class="login-logo-text">
+        <strong>OFICINA DO AMANHÃ</strong>
+        <span>Portal da Plataforma</span>
+      </div>
+    </div>
+    <h2 class="login-title">Acesso restrito</h2>
+    <p class="login-sub">Este portal é de uso interno. Insira suas credenciais para continuar.</p>
+    <div id="login-error">Usuário ou senha incorretos.</div>
+    <div class="field">
+      <label>Usuário</label>
+      <input type="text" id="username" placeholder="seu.usuario" autocomplete="username">
+    </div>
+    <div class="field">
+      <label>Senha</label>
+      <input type="password" id="password" placeholder="••••••••" autocomplete="current-password">
+    </div>
+    <button class="btn-primary" onclick="doLogin()">Entrar</button>
+    <p class="login-hint">// acesso somente para membros autorizados</p>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     PORTAL
+══════════════════════════════════════════════════════════ -->
+<div id="portal">
+  <div class="layout">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="sidebar-logo">
+        <div class="sidebar-logo-icon">⚙️</div>
+        <div class="sidebar-logo-text">
+          <strong>OFICINA DO AMANHÃ</strong>
+          <span>Portal v1.0</span>
+        </div>
+      </div>
+
+      <div class="sidebar-section-label">Principal</div>
+      <a class="nav-item active" onclick="showPage('downloads', this)">
+        <span class="icon">⬇️</span> Downloads
+      </a>
+      <a class="nav-item" onclick="showPage('changelog', this)">
+        <span class="icon">📋</span> Novidades
+      </a>
+
+      <div class="sidebar-section-label" style="margin-top:12px">Informações</div>
+      <a class="nav-item" onclick="showPage('sobre', this)">
+        <span class="icon">ℹ️</span> Sobre a Plataforma
+      </a>
+      <a class="nav-item" onclick="showPage('suporte', this)">
+        <span class="icon">💬</span> Suporte
+      </a>
+
+      <div class="sidebar-spacer"></div>
+
+      <div class="sidebar-user">
+        <div class="user-avatar" id="user-avatar">A</div>
+        <div class="user-info">
+          <strong id="user-name">Usuário</strong>
+          <span>Membro</span>
+        </div>
+        <button class="btn-logout" title="Sair" onclick="doLogout()">⏻</button>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main">
+
+      <!-- ── DOWNLOADS ─────────────────────────────────────── -->
+      <div id="page-downloads" class="page active">
+        <div class="page-header">
+          <div class="tag">⬇ Downloads</div>
+          <h1>Aplicações da Plataforma</h1>
+          <p>Faça o download das versões mais recentes do OficinaCode e do OficinaAdmin.</p>
+        </div>
+
+        <div class="status-bar">
+          <div class="status-item">
+            <div class="status-dot green"></div>
+            <span>OficinaAdmin <strong>v1.0.0</strong> — disponível</span>
+          </div>
+          <div class="status-item">
+            <div class="status-dot green"></div>
+            <span>OficinaCode <strong>v1.0.0</strong> — disponível</span>
+          </div>
+          <div class="status-item">
+            <div class="status-dot green"></div>
+            <span>Banco de dados — online</span>
+          </div>
+        </div>
+
+        <div class="download-grid">
+
+          <!-- OficinaCode -->
+          <div class="download-card code">
+            <div class="card-top">
+              <div class="card-icon">🧩</div>
+              <div class="card-meta">
+                <h2>OficinaCode</h2>
+                <p>Ambiente de programação em blocos para alunos. Montagem visual de projetos com compilação para Arduino.</p>
+              </div>
+            </div>
+            <div class="card-version">
+              <div class="dot"></div>
+              Versão atual: v1.0.0
+            </div>
+            <div class="card-specs">
+              <span class="spec-pill">Windows 10+</span>
+              <span class="spec-pill">64-bit</span>
+              <span class="spec-pill">~85 MB</span>
+            </div>
+            <a href="#" class="btn-download" onclick="simDownload(event, 'OficinaCode')">
+              ⬇ Baixar OficinaCode
+            </a>
+          </div>
+
+          <!-- OficinaAdmin -->
+          <div class="download-card admin">
+            <div class="card-top">
+              <div class="card-icon">🛠️</div>
+              <div class="card-meta">
+                <h2>OficinaAdmin</h2>
+                <p>Painel de gestão para professores e administradores. Chamada, cronograma, horas e conteúdo.</p>
+              </div>
+            </div>
+            <div class="card-version">
+              <div class="dot"></div>
+              Versão atual: v1.0.0
+            </div>
+            <div class="card-specs">
+              <span class="spec-pill">Windows 10+</span>
+              <span class="spec-pill">64-bit</span>
+              <span class="spec-pill">~42 MB</span>
+            </div>
+            <a href="#" class="btn-download" onclick="simDownload(event, 'OficinaAdmin')">
+              ⬇ Baixar OficinaAdmin
+            </a>
+          </div>
+
+        </div>
+
+        <!-- Instruções rápidas -->
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:24px;max-width:720px;">
+          <h3 style="font-size:15px;font-weight:700;margin-bottom:16px;">📦 Instruções de instalação</h3>
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <div class="change-item">Baixe o instalador correspondente ao aplicativo desejado</div>
+            <div class="change-item">Execute o arquivo <code style="font-family:var(--font-mono);background:var(--surface2);border:1px solid var(--border);padding:1px 6px;border-radius:4px;font-size:12px;">.exe</code> e siga as instruções do assistente de instalação</div>
+            <div class="change-item">Na primeira execução, utilize as credenciais fornecidas pelo administrador da plataforma</div>
+            <div class="change-item">Mantenha o aplicativo atualizado verificando esta página regularmente</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── CHANGELOG ──────────────────────────────────────── -->
+      <div id="page-changelog" class="page">
+        <div class="page-header">
+          <div class="tag">📋 Novidades</div>
+          <h1>Histórico de Atualizações</h1>
+          <p>Registro de todas as versões lançadas e alterações realizadas na plataforma.</p>
+        </div>
+
+        <div class="changelog">
+
+          <!-- v1.0.0 -->
+          <div class="release latest">
+            <div class="release-dot">🚀</div>
+            <div class="release-body">
+              <div class="release-header">
+                <span class="release-version">v1.0.0</span>
+                <span class="badge latest">MAIS RECENTE</span>
+                <span class="badge admin">OficinaAdmin</span>
+                <span class="badge code">OficinaCode</span>
+                <span class="release-date">Março 2026 — Sprint 1</span>
+              </div>
+              <div class="release-card">
+                <div class="change-section">
+                  <div class="change-section-title"><span class="badge feature">NOVO</span> OficinaAdmin</div>
+                  <div class="change-item">Gestão completa de escolas, turmas, alunos e professores</div>
+                  <div class="change-item">Cronograma oficial com seleção de múltiplos dias simultâneos</div>
+                  <div class="change-item">Chamada inteligente — detecção automática de aula em andamento por horário</div>
+                  <div class="change-item">Registro de horas gerado automaticamente a partir de cada chamada</div>
+                  <div class="change-item">Painel de horas e pagamento para o administrador com filtros por professor e período</div>
+                  <div class="change-item">Histórico de chamadas com opção de exclusão de registros</div>
+                  <div class="change-item">Central de Conteúdo — trilhas pedagógicas com vídeo, PDF e código por projeto</div>
+                  <div class="change-item">Sistema de perfis com controle de acesso por papel (Admin / Professor)</div>
+                </div>
+                <div class="change-section">
+                  <div class="change-section-title"><span class="badge feature">NOVO</span> OficinaCode</div>
+                  <div class="change-item">Editor de programação em blocos com compilação para Arduino</div>
+                  <div class="change-item">Interface de arrastar e encaixar blocos lógicos</div>
+                  <div class="change-item">Acesso às trilhas de aprendizagem por projeto</div>
+                  <div class="change-item">Visualização de código C++ gerado em tempo real</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ── SOBRE ────────────────────────────────────────────── -->
+      <div id="page-sobre" class="page">
+        <div class="page-header">
+          <div class="tag">ℹ Sobre</div>
+          <h1>Sobre a Plataforma</h1>
+          <p>Informações técnicas e estruturais da plataforma Oficina do Amanhã.</p>
+        </div>
+
+        <div class="about-grid">
+          <div class="about-card">
+            <div class="about-card-icon">🛠️</div>
+            <h3>OficinaAdmin</h3>
+            <p>Ambiente operacional para professores e administradores. Gestão de turmas, chamadas, horas e distribuição de conteúdo pedagógico.</p>
+          </div>
+          <div class="about-card">
+            <div class="about-card-icon">🧩</div>
+            <h3>OficinaCode</h3>
+            <p>Ambiente do aluno. Ferramenta de programação em blocos com compilação para microcontroladores e acesso a trilhas de aprendizagem.</p>
+          </div>
+          <div class="about-card">
+            <div class="about-card-icon">📚</div>
+            <h3>Central de Conteúdo</h3>
+            <p>Trilhas pedagógicas por projeto e tipo de escola. Material completo para que professores sem formação técnica conduzam aulas de robótica.</p>
+          </div>
+          <div class="about-card">
+            <div class="about-card-icon">🔐</div>
+            <h3>Controle de Acesso</h3>
+            <p>Sistema RBAC com perfis distintos — Administrador, Professor e Aluno. Cada perfil acessa apenas os dados e funções do seu escopo.</p>
+          </div>
+        </div>
+
+        <div class="about-stack">
+          <h3>Stack técnica</h3>
+          <div class="stack-row">
+            <span class="stack-label">OficinaAdmin</span>
+            <span class="stack-value">Java 21 + JavaFX</span>
+          </div>
+          <div class="stack-row">
+            <span class="stack-label">OficinaCode</span>
+            <span class="stack-value">Tauri 2 + React + Rust</span>
+          </div>
+          <div class="stack-row">
+            <span class="stack-label">Banco de dados</span>
+            <span class="stack-value">PostgreSQL via Supabase</span>
+          </div>
+          <div class="stack-row">
+            <span class="stack-label">Controle de acesso</span>
+            <span class="stack-value">RBAC — Role Based Access Control</span>
+          </div>
+          <div class="stack-row">
+            <span class="stack-label">Plataforma</span>
+            <span class="stack-value">Windows 10+ (64-bit)</span>
+          </div>
+          <div class="stack-row">
+            <span class="stack-label">Sprint atual</span>
+            <span class="stack-value">Sprint 1 — v1.0.0</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── SUPORTE ───────────────────────────────────────────── -->
+      <div id="page-suporte" class="page">
+        <div class="page-header">
+          <div class="tag">💬 Suporte</div>
+          <h1>Suporte Técnico</h1>
+          <p>Dúvidas, problemas ou solicitações relacionados à plataforma.</p>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:14px;max-width:600px;">
+
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:22px;">
+            <div style="font-size:22px;margin-bottom:10px;">🐛</div>
+            <h3 style="font-size:15px;font-weight:700;margin-bottom:6px;">Reportar um problema</h3>
+            <p style="font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:14px;">Encontrou um erro ou comportamento inesperado? Descreva o que aconteceu, em qual tela e quais passos levaram ao problema.</p>
+            <a href="mailto:suporte@oficinadoamanha.com.br" style="display:inline-flex;align-items:center;gap:6px;font-size:13px;color:#60A5FA;text-decoration:none;">
+              ✉ suporte@oficinадoamanha.com.br
+            </a>
+          </div>
+
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:22px;">
+            <div style="font-size:22px;margin-bottom:10px;">📖</div>
+            <h3 style="font-size:15px;font-weight:700;margin-bottom:6px;">Documentação</h3>
+            <p style="font-size:13px;color:var(--muted);line-height:1.6;">A documentação técnica completa da plataforma — incluindo especificação da Sprint 1 e plano de evolução — está disponível com o responsável técnico do projeto.</p>
+          </div>
+
+          <div style="background:var(--surface);border:1px solid rgba(245,130,10,0.2);border-radius:12px;padding:22px;">
+            <div style="font-size:22px;margin-bottom:10px;">⚠️</div>
+            <h3 style="font-size:15px;font-weight:700;margin-bottom:6px;">Aviso de infraestrutura</h3>
+            <p style="font-size:13px;color:var(--muted);line-height:1.6;">A versão atual utiliza o plano gratuito do Supabase. Para operação com múltiplos usuários simultâneos, a contratação de infraestrutura adequada será necessária. Entre em contato com o responsável técnico para planejar essa transição.</p>
+          </div>
+
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<script>
+  // ── AUTH (demo — troque por integração real) ─────────────────────────────
+  const USUARIOS = {
+    "admin":    { senha: "oficina2026", nome: "Administrador", inicial: "A" },
+    "professor":{ senha: "prof2026",   nome: "Professor",      inicial: "P" },
+    "diretor":  { senha: "dir2026",    nome: "Diretor",        inicial: "D" },
+  };
+
+  function doLogin() {
+    const u = document.getElementById('username').value.trim().toLowerCase();
+    const s = document.getElementById('password').value;
+    const err = document.getElementById('login-error');
+
+    if (USUARIOS[u] && USUARIOS[u].senha === s) {
+      err.style.display = 'none';
+      sessionStorage.setItem('oa_user', JSON.stringify({ user: u, ...USUARIOS[u] }));
+      iniciarPortal(USUARIOS[u]);
+    } else {
+      err.style.display = 'block';
+      document.getElementById('password').value = '';
+      document.getElementById('password').focus();
+    }
+  }
+
+  function iniciarPortal(dados) {
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('portal').style.display = 'block';
+    document.getElementById('user-name').textContent = dados.nome;
+    document.getElementById('user-avatar').textContent = dados.inicial;
+  }
+
+  function doLogout() {
+    sessionStorage.removeItem('oa_user');
+    document.getElementById('portal').style.display = 'none';
+    document.getElementById('login-screen').style.display = 'flex';
+    document.getElementById('username').value = '';
+    document.getElementById('password').value = '';
+  }
+
+  // Enter no login
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && document.getElementById('login-screen').style.display !== 'none') {
+      doLogin();
+    }
+  });
+
+  // Sessão persistente
+  window.addEventListener('DOMContentLoaded', () => {
+    const saved = sessionStorage.getItem('oa_user');
+    if (saved) iniciarPortal(JSON.parse(saved));
+  });
+
+  // ── NAVEGAÇÃO ────────────────────────────────────────────────────────────
+  function showPage(id, el) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    const pg = document.getElementById('page-' + id);
+    if (pg) { pg.classList.add('active'); }
+    if (el) el.classList.add('active');
+  }
+
+  // ── DOWNLOAD SIMULADO ────────────────────────────────────────────────────
+  function simDownload(e, app) {
+    e.preventDefault();
+    const btn = e.currentTarget;
+    const orig = btn.innerHTML;
+    btn.innerHTML = '⏳ Preparando download...';
+    btn.style.opacity = '0.7';
+    setTimeout(() => {
+      btn.innerHTML = '✔ Download iniciado!';
+      setTimeout(() => {
+        btn.innerHTML = orig;
+        btn.style.opacity = '1';
+      }, 2000);
+    }, 1200);
+    // Troque o href do <a> pelo link real do arquivo quando disponível
+  }
+</script>
+</body>
+</html>
