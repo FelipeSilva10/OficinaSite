@@ -1,4 +1,4 @@
-# 🌐 Oficina Portal
+# 🌐 Oficina Site
 
 Portal web interno da plataforma **Oficina do Amanhã**.
 
