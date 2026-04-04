@@ -3,937 +3,720 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Orbita — Plataforma de Robótica Educacional</title>
-<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<title>Orbita — Robótica Educacional</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
   :root {
     --bg:        #07090F;
     --surface:   #0E1320;
-    --surface2:  #151D30;
+    --surface2:  #131B2E;
     --border:    #1A2540;
+    --border2:   #232F47;
     --blue:      #1A72E8;
     --blue-dim:  #0D3C8A;
+    --blue-sub:  rgba(26,114,232,0.08);
     --orange:    #F5820A;
+    --orange-sub:rgba(245,130,10,0.08);
     --text:      #E8EEF8;
-    --muted:     #5A6E90;
-    --muted2:    #2E3D58;
+    --text2:     #94A3B8;
+    --muted:     #4A5E80;
     --green:     #22C55E;
-    --red:       #EF4444;
-    --font-mono: 'Space Mono', monospace;
-    --font-body: 'DM Sans', sans-serif;
+    --nav-bg:    rgba(7,9,15,0.85);
+    --grid-line: rgba(26,114,232,0.04);
+    --mono: 'Space Mono', monospace;
+    --body: 'DM Sans', sans-serif;
+  }
+
+  html.light {
+    --bg:        #F4F6FA;
+    --surface:   #FFFFFF;
+    --surface2:  #EEF1F8;
+    --border:    #D4DCF0;
+    --border2:   #C0CEEA;
+    --blue:      #1A72E8;
+    --blue-dim:  #0D3C8A;
+    --blue-sub:  rgba(26,114,232,0.07);
+    --orange:    #E06C00;
+    --orange-sub:rgba(224,108,0,0.07);
+    --text:      #0D1526;
+    --text2:     #3D5278;
+    --muted:     #7A90B8;
+    --green:     #16A34A;
+    --nav-bg:    rgba(244,246,250,0.88);
+    --grid-line: rgba(26,114,232,0.055);
   }
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
   html { scroll-behavior: smooth; }
 
   body {
-    font-family: var(--font-body);
+    font-family: var(--body);
     background: var(--bg);
     color: var(--text);
     min-height: 100vh;
     overflow-x: hidden;
   }
 
-  /* ── STARS ──────────────────────────────────────────────────── */
-  .stars {
-    position: fixed; inset: 0;
-    pointer-events: none; z-index: 0;
-    overflow: hidden;
+  /* ── GRID BACKGROUND ─────────────────────────────────────────── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(var(--grid-line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+    background-size: 48px 48px;
+    pointer-events: none;
+    z-index: 0;
   }
 
-  .star {
-    position: absolute;
-    background: #fff;
-    border-radius: 50%;
-    animation: twinkle var(--d, 4s) ease-in-out infinite var(--delay, 0s);
-    opacity: 0;
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(26,114,232,0.05) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
   }
 
-  @keyframes twinkle {
-    0%, 100% { opacity: 0; }
-    50% { opacity: var(--peak, 0.5); }
-  }
-
-  /* ── NAV ────────────────────────────────────────────────────── */
+  /* ── NAV ─────────────────────────────────────────────────────── */
   nav {
     position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    height: 56px;
     display: flex; align-items: center; justify-content: space-between;
-    padding: 20px 48px;
-    border-bottom: 1px solid rgba(255,255,255,0.04);
-    background: rgba(7,9,15,0.7);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    padding: 0 40px;
+    border-bottom: 1px solid var(--border);
+    background: var(--nav-bg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
   }
 
   .nav-logo {
-    display: flex; align-items: center; gap: 10px;
+    display: flex; align-items: center; gap: 12px;
     text-decoration: none;
   }
 
-  .nav-logo-icon {
-    width: 32px; height: 32px;
-    background: linear-gradient(135deg, var(--blue) 0%, var(--blue-dim) 100%);
-    border-radius: 8px;
+  .nav-logo-mark {
+    width: 28px; height: 28px;
+    border: 1px solid var(--border2);
+    border-radius: 6px;
     display: flex; align-items: center; justify-content: center;
-    font-size: 15px;
-    box-shadow: 0 0 18px rgba(26,114,232,0.35);
+    background: var(--surface2);
+  }
+
+  .nav-logo-mark svg {
+    width: 14px; height: 14px;
   }
 
   .nav-logo-text {
-    font-family: var(--font-mono);
-    font-size: 13px;
+    font-family: var(--mono);
+    font-size: 12px;
     font-weight: 700;
-    letter-spacing: 0.14em;
+    letter-spacing: 0.18em;
     color: var(--text);
   }
 
-  .nav-links {
-    display: flex; align-items: center; gap: 32px;
-    list-style: none;
+  .nav-right {
+    display: flex; align-items: center; gap: 24px;
   }
 
-  .nav-links a {
-    font-size: 13px;
+  .theme-toggle {
+    width: 32px; height: 32px;
+    border-radius: 7px;
+    border: 1px solid var(--border2);
+    background: var(--surface2);
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
     color: var(--muted);
-    text-decoration: none;
-    transition: color 0.2s;
-    letter-spacing: 0.02em;
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
+    flex-shrink: 0;
   }
 
-  .nav-links a:hover { color: var(--text); }
-
-  .nav-cta {
-    background: rgba(26,114,232,0.15) !important;
-    color: #93C5FD !important;
-    border: 1px solid rgba(26,114,232,0.3);
-    border-radius: 8px;
-    padding: 7px 16px;
-    font-size: 13px !important;
-    transition: background 0.2s !important;
+  .theme-toggle:hover {
+    background: var(--surface);
+    border-color: var(--muted);
+    color: var(--text2);
   }
 
-  .nav-cta:hover { background: rgba(26,114,232,0.28) !important; }
+  .theme-toggle svg { width: 15px; height: 15px; }
 
-  /* ── HERO ───────────────────────────────────────────────────── */
+  .icon-moon { display: block; }
+  .icon-sun  { display: none; }
+  html.light .icon-moon { display: none; }
+  html.light .icon-sun  { display: block; }
+
+  /* ── HERO ────────────────────────────────────────────────────── */
   .hero {
-    position: relative;
+    position: relative; z-index: 1;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     text-align: center;
-    overflow: hidden;
-    padding: 120px 24px 80px;
+    padding: 100px 24px 80px;
+    border-bottom: 1px solid var(--border);
   }
 
-  .hero-glow {
-    position: absolute;
-    width: 600px; height: 600px;
-    background: radial-gradient(ellipse, rgba(26,114,232,0.12) 0%, transparent 68%);
-    border-radius: 50%;
-    top: 50%; left: 50%;
-    transform: translate(-50%, -50%);
-    pointer-events: none;
+  .hero-label {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 40px;
+    padding: 6px 14px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    background: var(--surface);
   }
 
-  /* ── ORBITAL SYSTEM ─────────────────────────────────────────── */
-  .orbit-system {
-    position: absolute;
-    width: 560px; height: 560px;
-    top: 50%; left: 50%;
-    transform: translate(-50%, -50%);
-    pointer-events: none;
-  }
-
-  .orbit-ring {
-    position: absolute;
-    border-radius: 50%;
-    border: 1px solid rgba(26,114,232,0.18);
-    top: 50%; left: 50%;
-    transform: translate(-50%, -50%);
-  }
-
-  .orbit-ring-1 {
-    width: 220px; height: 220px;
-    border-color: rgba(26,114,232,0.22);
-    transform: translate(-50%, -50%) rotateX(70deg);
-  }
-
-  .orbit-ring-2 {
-    width: 340px; height: 340px;
-    border-color: rgba(26,114,232,0.14);
-    transform: translate(-50%, -50%) rotateX(70deg) rotateZ(35deg);
-  }
-
-  .orbit-ring-3 {
-    width: 470px; height: 470px;
-    border-color: rgba(245,130,10,0.1);
-    transform: translate(-50%, -50%) rotateX(65deg) rotateZ(-20deg);
-  }
-
-  .satellite {
-    position: absolute;
-    border-radius: 50%;
-    top: 50%; left: 50%;
-  }
-
-  .sat-1 {
-    width: 110px; height: 110px;
-    margin: -55px 0 0 -55px;
-    animation: spin-sat 8s linear infinite;
-  }
-
-  .sat-1::after {
-    content: '';
-    position: absolute;
-    width: 7px; height: 7px;
-    background: #60A5FA;
-    border-radius: 50%;
-    top: 0; left: 50%;
-    transform: translateX(-50%);
-    box-shadow: 0 0 8px rgba(96,165,250,0.8);
-  }
-
-  .sat-2 {
-    width: 170px; height: 170px;
-    margin: -85px 0 0 -85px;
-    animation: spin-sat 14s linear infinite reverse;
-  }
-
-  .sat-2::after {
-    content: '';
-    position: absolute;
-    width: 6px; height: 6px;
-    background: #93C5FD;
-    border-radius: 50%;
-    top: 0; left: 50%;
-    transform: translateX(-50%);
-    box-shadow: 0 0 8px rgba(147,197,253,0.7);
-  }
-
-  .sat-3 {
-    width: 235px; height: 235px;
-    margin: -117px 0 0 -117px;
-    animation: spin-sat 22s linear infinite;
-  }
-
-  .sat-3::after {
-    content: '';
-    position: absolute;
-    width: 5px; height: 5px;
-    background: #FDBA74;
-    border-radius: 50%;
-    top: 0; left: 50%;
-    transform: translateX(-50%);
-    box-shadow: 0 0 8px rgba(253,186,116,0.7);
-  }
-
-  @keyframes spin-sat {
-    from { transform: rotate(0deg); }
-    to   { transform: rotate(360deg); }
-  }
-
-  .planet {
-    position: absolute;
-    width: 52px; height: 52px;
-    top: 50%; left: 50%;
-    transform: translate(-50%, -50%);
-    background: radial-gradient(circle at 38% 36%, #1E3A6E 0%, #0B1729 60%, #060D1A 100%);
-    border-radius: 50%;
-    border: 1px solid rgba(26,114,232,0.35);
-    box-shadow: 0 0 0 6px rgba(26,114,232,0.06), 0 0 28px rgba(26,114,232,0.2);
-    animation: breathe 5s ease-in-out infinite;
-  }
-
-  .planet::before {
-    content: '';
-    position: absolute;
-    width: 16px; height: 10px;
-    background: rgba(255,255,255,0.12);
-    border-radius: 50%;
-    top: 10px; left: 12px;
-    transform: rotate(-20deg);
-    filter: blur(2px);
-  }
-
-  @keyframes breathe {
-    0%, 100% { box-shadow: 0 0 0 6px rgba(26,114,232,0.06), 0 0 28px rgba(26,114,232,0.2); }
-    50%       { box-shadow: 0 0 0 10px rgba(26,114,232,0.08), 0 0 40px rgba(26,114,232,0.28); }
-  }
-
-  /* ── HERO CONTENT ───────────────────────────────────────────── */
-  .hero-content {
-    position: relative; z-index: 2;
-  }
-
-  .hero-tag {
-    display: inline-flex; align-items: center; gap: 7px;
-    background: rgba(26,114,232,0.1);
-    border: 1px solid rgba(26,114,232,0.22);
-    border-radius: 999px;
-    padding: 5px 14px;
-    font-family: var(--font-mono);
-    font-size: 11px;
-    letter-spacing: 0.08em;
-    color: #60A5FA;
-    margin-bottom: 36px;
-  }
-
-  .hero-tag-dot {
+  .hero-label-dot {
     width: 5px; height: 5px;
     border-radius: 50%;
-    background: #60A5FA;
-    animation: pulse-dot 2s ease infinite;
+    background: var(--green);
+    animation: blink 2s step-end infinite;
   }
 
-  @keyframes pulse-dot {
+  @keyframes blink {
     0%, 100% { opacity: 1; }
-    50% { opacity: 0.35; }
+    50% { opacity: 0; }
   }
 
   .hero-title {
-    font-family: var(--font-mono);
-    font-size: clamp(72px, 14vw, 120px);
+    font-family: var(--mono);
+    font-size: clamp(56px, 12vw, 104px);
     font-weight: 700;
-    letter-spacing: -0.01em;
-    line-height: 0.92;
+    letter-spacing: -0.02em;
+    line-height: 1;
     color: var(--text);
-    margin-bottom: 28px;
-    animation: heroIn 0.9s cubic-bezier(.22,1,.36,1) both;
+    margin-bottom: 24px;
   }
 
-  .hero-title span {
-    background: linear-gradient(90deg, var(--blue) 0%, #60A5FA 50%, var(--orange) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-
-  @keyframes heroIn {
-    from { opacity: 0; transform: translateY(30px); }
-    to   { opacity: 1; transform: translateY(0); }
+  .hero-title-accent {
+    color: var(--blue);
   }
 
   .hero-sub {
-    font-size: 17px;
-    font-weight: 300;
-    color: var(--muted);
-    max-width: 440px;
-    line-height: 1.65;
-    margin: 0 auto 56px;
-    animation: heroIn 0.9s cubic-bezier(.22,1,.36,1) 0.1s both;
+    font-size: 15px;
+    font-weight: 400;
+    color: var(--text2);
+    max-width: 380px;
+    line-height: 1.7;
+    margin: 0 auto 52px;
   }
 
   .hero-actions {
-    display: flex; align-items: center; justify-content: center; gap: 14px;
-    animation: heroIn 0.9s cubic-bezier(.22,1,.36,1) 0.2s both;
+    display: flex; align-items: center; gap: 12px;
+    flex-wrap: wrap;
+    justify-content: center;
   }
 
-  .btn-hero-primary {
+  .btn-primary {
     display: inline-flex; align-items: center; gap: 8px;
     background: var(--blue);
     color: #fff;
     border: none;
-    border-radius: 10px;
-    padding: 14px 28px;
-    font-family: var(--font-body);
-    font-size: 15px;
+    border-radius: 8px;
+    padding: 12px 24px;
+    font-size: 14px;
     font-weight: 600;
+    font-family: var(--body);
     cursor: pointer;
     text-decoration: none;
-    transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
-    box-shadow: 0 4px 24px rgba(26,114,232,0.35);
+    transition: background 0.15s, transform 0.1s;
     letter-spacing: 0.01em;
   }
 
-  .btn-hero-primary:hover {
-    background: #1A65D6;
-    box-shadow: 0 6px 32px rgba(26,114,232,0.5);
-    transform: translateY(-1px);
-  }
+  .btn-primary:hover { background: #1566D4; transform: translateY(-1px); }
 
-  .btn-hero-secondary {
+  .btn-secondary {
     display: inline-flex; align-items: center; gap: 8px;
-    background: transparent;
-    color: var(--muted);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 14px 28px;
-    font-family: var(--font-body);
-    font-size: 15px;
+    background: var(--surface);
+    color: var(--text2);
+    border: 1px solid var(--border2);
+    border-radius: 8px;
+    padding: 12px 24px;
+    font-size: 14px;
     font-weight: 500;
+    font-family: var(--body);
     cursor: pointer;
     text-decoration: none;
-    transition: color 0.2s, border-color 0.2s, transform 0.15s;
+    transition: border-color 0.15s, color 0.15s, transform 0.1s;
   }
 
-  .btn-hero-secondary:hover {
+  .btn-secondary:hover {
+    border-color: var(--muted);
     color: var(--text);
-    border-color: var(--muted2);
     transform: translateY(-1px);
   }
 
-  /* ── SCROLL INDICATOR ───────────────────────────────────────── */
-  .scroll-hint {
-    position: absolute;
-    bottom: 36px; left: 50%;
-    transform: translateX(-50%);
-    display: flex; flex-direction: column; align-items: center; gap: 8px;
-    font-size: 11px;
-    font-family: var(--font-mono);
-    color: var(--muted2);
-    letter-spacing: 0.08em;
-    animation: fadeInUp 1s 1.2s both;
-  }
-
-  .scroll-hint-bar {
-    width: 1px; height: 36px;
-    background: linear-gradient(to bottom, var(--muted2), transparent);
-    animation: scrollDrop 2s ease-in-out infinite;
-  }
-
-  @keyframes scrollDrop {
-    0%, 100% { transform: scaleY(1); transform-origin: top; opacity: 1; }
-    50% { opacity: 0.3; }
-  }
-
-  @keyframes fadeInUp {
-    from { opacity: 0; transform: translateX(-50%) translateY(10px); }
-    to   { opacity: 1; transform: translateX(-50%) translateY(0); }
-  }
-
-  /* ── PRODUCTS SECTION ───────────────────────────────────────── */
-  .section {
-    position: relative; z-index: 2;
-    padding: 100px 48px;
-    max-width: 1100px;
+  /* ── PRODUCTS ────────────────────────────────────────────────── */
+  .products {
+    position: relative; z-index: 1;
+    max-width: 1040px;
     margin: 0 auto;
+    padding: 80px 40px;
   }
 
-  .section-label {
-    font-family: var(--font-mono);
+  .block-label {
+    font-family: var(--mono);
     font-size: 10px;
     letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--muted2);
-    margin-bottom: 12px;
-  }
-
-  .section-title {
-    font-size: 32px;
-    font-weight: 600;
-    color: var(--text);
-    margin-bottom: 8px;
-    line-height: 1.2;
-  }
-
-  .section-sub {
-    font-size: 15px;
     color: var(--muted);
-    line-height: 1.6;
-    max-width: 520px;
-    margin-bottom: 52px;
+    text-transform: uppercase;
+    margin-bottom: 32px;
+  }
+
+  .block-label::before {
+    content: '// ';
+    color: var(--border2);
   }
 
   .products-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
-    gap: 20px;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
   }
 
   .product-card {
     background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    padding: 36px;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
     position: relative;
-    overflow: hidden;
-    transition: border-color 0.25s, transform 0.25s;
+    transition: background 0.2s;
   }
 
-  .product-card::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: 20px;
-    opacity: 0;
-    transition: opacity 0.3s;
-  }
+  .product-card:hover { background: var(--surface2); }
 
-  .product-card.bloquin::after {
-    background: radial-gradient(ellipse 60% 50% at 80% 20%, rgba(245,130,10,0.06) 0%, transparent 60%);
-  }
-
-  .product-card.sag::after {
-    background: radial-gradient(ellipse 60% 50% at 80% 20%, rgba(26,114,232,0.07) 0%, transparent 60%);
-  }
-
-  .product-card:hover { transform: translateY(-3px); }
-  .product-card.bloquin:hover { border-color: rgba(245,130,10,0.35); }
-  .product-card.sag:hover     { border-color: rgba(26,114,232,0.4); }
-  .product-card:hover::after  { opacity: 1; }
-
-  .card-header {
-    display: flex; align-items: center; gap: 16px;
+  .card-top {
+    display: flex; align-items: flex-start;
+    justify-content: space-between;
     margin-bottom: 28px;
-    position: relative; z-index: 1;
   }
 
-  /* ── CARD ICON com logo imagem ──────────────────────────────── */
   .card-icon {
-    width: 52px; height: 52px;
-    border-radius: 14px;
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0;
+    width: 44px; height: 44px;
+    border-radius: 10px;
     overflow: hidden;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
   }
 
   .card-icon img {
-    width: 100%;
-    height: 100%;
+    width: 100%; height: 100%;
     object-fit: contain;
   }
 
-  .bloquin .card-icon,
-  .sag .card-icon {
-    background: transparent;
-    border: none;
-    padding: 0;
+  .card-badge {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    padding: 4px 8px;
+    border-radius: 4px;
+    border: 1px solid;
+  }
+
+  .badge-orange {
+    color: #FDBA74;
+    border-color: rgba(245,130,10,0.3);
+    background: rgba(245,130,10,0.06);
+  }
+
+  .badge-blue {
+    color: #93C5FD;
+    border-color: rgba(26,114,232,0.3);
+    background: rgba(26,114,232,0.06);
   }
 
   .card-name {
-    font-family: var(--font-mono);
-    font-size: 20px;
+    font-family: var(--mono);
+    font-size: 22px;
     font-weight: 700;
     color: var(--text);
-    line-height: 1;
     margin-bottom: 4px;
   }
 
   .card-tagline {
-    font-size: 12px;
+    font-size: 13px;
     color: var(--muted);
-    letter-spacing: 0.02em;
+    margin-bottom: 20px;
   }
 
   .card-desc {
     font-size: 14px;
-    color: var(--muted);
+    color: var(--text2);
     line-height: 1.65;
     margin-bottom: 28px;
-    position: relative; z-index: 1;
+    flex: 1;
   }
 
   .card-features {
     display: flex;
     flex-direction: column;
-    gap: 9px;
-    margin-bottom: 32px;
-    position: relative; z-index: 1;
+    gap: 8px;
+    margin-bottom: 28px;
   }
 
   .card-feature {
-    display: flex; align-items: center; gap: 10px;
-    font-size: 13px;
-    color: #A0B4CC;
+    display: flex; align-items: baseline; gap: 10px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text2);
   }
 
-  .feature-dot {
-    width: 5px; height: 5px;
-    border-radius: 50%;
+  .card-feature::before {
+    content: '→';
+    font-size: 10px;
     flex-shrink: 0;
   }
 
-  .bloquin .feature-dot { background: var(--orange); }
-  .sag     .feature-dot { background: var(--blue); }
+  .bloquin-card .card-feature::before { color: var(--orange); }
+  .sag-card     .card-feature::before { color: var(--blue); }
 
-  .card-version {
-    display: inline-flex; align-items: center; gap: 7px;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 4px 10px;
-    font-family: var(--font-mono);
-    font-size: 11px;
-    color: var(--muted);
-    margin-bottom: 20px;
-    position: relative; z-index: 1;
-  }
-
-  .version-dot {
-    width: 6px; height: 6px;
-    border-radius: 50%;
-    background: var(--green);
-    animation: pulse-dot 2s ease infinite;
-  }
-
-  .card-specs {
-    display: flex; gap: 8px;
+  .card-meta {
+    display: flex; gap: 6px;
     flex-wrap: wrap;
     margin-bottom: 24px;
-    position: relative; z-index: 1;
   }
 
-  .spec {
+  .meta-tag {
     font-size: 11px;
+    font-family: var(--mono);
     color: var(--muted);
-    background: var(--surface2);
+    background: var(--bg);
     border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 3px 10px;
+    border-radius: 4px;
+    padding: 3px 8px;
+  }
+
+  .card-divider {
+    height: 1px;
+    background: var(--border);
+    margin-bottom: 24px;
   }
 
   .btn-card {
     display: flex; align-items: center; justify-content: center; gap: 8px;
-    width: 100%;
-    padding: 13px;
-    border-radius: 10px;
+    padding: 11px;
+    border-radius: 7px;
     border: 1px solid;
-    cursor: pointer;
-    font-family: var(--font-body);
-    font-size: 14px;
-    font-weight: 600;
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
     text-decoration: none;
-    transition: all 0.2s;
-    position: relative; z-index: 1;
+    cursor: pointer;
+    transition: background 0.15s, transform 0.1s;
   }
 
-  .bloquin .btn-card {
-    background: rgba(245,130,10,0.12);
+  .bloquin-card .btn-card {
+    background: var(--orange-sub);
     color: #FDBA74;
-    border-color: rgba(245,130,10,0.25);
+    border-color: rgba(245,130,10,0.28);
   }
 
-  .bloquin .btn-card:hover { background: rgba(245,130,10,0.22); }
+  .bloquin-card .btn-card:hover { background: rgba(245,130,10,0.14); }
 
-  .sag .btn-card {
-    background: rgba(26,114,232,0.12);
+  .sag-card .btn-card {
+    background: var(--blue-sub);
     color: #93C5FD;
     border-color: rgba(26,114,232,0.28);
   }
 
-  .sag .btn-card:hover { background: rgba(26,114,232,0.22); }
+  .sag-card .btn-card:hover { background: rgba(26,114,232,0.14); }
 
-  /* ── STACK SECTION ──────────────────────────────────────────── */
+  /* ── STACK ───────────────────────────────────────────────────── */
   .stack-section {
-    position: relative; z-index: 2;
-    padding: 0 48px 100px;
-    max-width: 1100px;
+    position: relative; z-index: 1;
+    max-width: 1040px;
     margin: 0 auto;
+    padding: 0 40px 80px;
+    border-top: 1px solid var(--border);
   }
 
-  .stack-grid {
+  .stack-inner {
+    padding-top: 48px;
+  }
+
+  .stack-row {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(4, 1fr);
     gap: 1px;
     background: var(--border);
     border: 1px solid var(--border);
-    border-radius: 16px;
+    border-radius: 8px;
     overflow: hidden;
   }
 
-  .stack-item {
+  .stack-cell {
     background: var(--surface);
-    padding: 24px 28px;
+    padding: 20px 24px;
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 5px;
   }
 
   .stack-key {
-    font-size: 11px;
-    font-family: var(--font-mono);
-    letter-spacing: 0.1em;
-    color: var(--muted2);
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    color: var(--muted);
     text-transform: uppercase;
   }
 
   .stack-val {
-    font-size: 14px;
-    font-family: var(--font-mono);
+    font-family: var(--mono);
+    font-size: 13px;
     color: var(--text);
     font-weight: 700;
   }
 
-  /* ── FOOTER ─────────────────────────────────────────────────── */
+  /* ── FOOTER ──────────────────────────────────────────────────── */
   footer {
-    position: relative; z-index: 2;
+    position: relative; z-index: 1;
     border-top: 1px solid var(--border);
-    padding: 28px 48px;
+    padding: 24px 40px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 16px;
+    gap: 12px;
     flex-wrap: wrap;
   }
 
-  .footer-brand {
+  .footer-left {
     display: flex; align-items: center; gap: 10px;
   }
 
-  .footer-brand-text {
-    font-family: var(--font-mono);
-    font-size: 12px;
-    letter-spacing: 0.1em;
-    color: var(--muted2);
+  .footer-logo {
+    width: 22px; height: 22px;
+    border: 1px solid var(--border2);
+    border-radius: 5px;
+    background: var(--surface2);
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .footer-logo svg { width: 11px; height: 11px; }
+
+  .footer-name {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    color: var(--muted);
   }
 
   .footer-copy {
-    font-size: 12px;
-    color: var(--muted2);
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.06em;
   }
 
-  /* ── DIVIDER LINE ───────────────────────────────────────────── */
-  .section-divider {
-    position: relative; z-index: 2;
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 0 48px;
-    border-top: 1px solid var(--border);
-  }
-
-  /* ── RESPONSIVE ─────────────────────────────────────────────── */
-  @media (max-width: 768px) {
-    nav { padding: 16px 24px; }
-    .nav-links { display: none; }
-    .section { padding: 60px 24px; }
-    .stack-section { padding: 0 24px 60px; }
-    footer { padding: 24px; flex-direction: column; align-items: flex-start; }
-    .orbit-system { width: 340px; height: 340px; }
-    .orbit-ring-1 { width: 140px; height: 140px; }
-    .orbit-ring-2 { width: 210px; height: 210px; }
-    .orbit-ring-3 { width: 290px; height: 290px; }
-    .sat-1 { width: 70px; height: 70px; margin: -35px 0 0 -35px; }
-    .sat-2 { width: 105px; height: 105px; margin: -52px 0 0 -52px; }
-    .sat-3 { width: 145px; height: 145px; margin: -72px 0 0 -72px; }
+  /* ── RESPONSIVE ──────────────────────────────────────────────── */
+  @media (max-width: 720px) {
+    nav { padding: 0 20px; }
+    .nav-right .nav-link { display: none; }
+    .products { padding: 60px 20px; }
     .products-grid { grid-template-columns: 1fr; }
+    .stack-section { padding: 0 20px 60px; }
+    .stack-row { grid-template-columns: 1fr 1fr; }
+    footer { padding: 20px; flex-direction: column; align-items: flex-start; }
   }
 </style>
 </head>
 <body>
 
-<!-- Stars -->
-<div class="stars" id="stars"></div>
-
 <!-- Nav -->
 <nav>
   <a class="nav-logo" href="#">
-    <div class="nav-logo-icon">🪐</div>
+    <div class="nav-logo-mark">
+      <svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="7" cy="7" r="2.5" stroke="#1A72E8" stroke-width="1.2"/>
+        <ellipse cx="7" cy="7" rx="6" ry="2.5" stroke="#1A72E8" stroke-width="0.8" stroke-opacity="0.5" transform="rotate(-30 7 7)"/>
+      </svg>
+    </div>
     <span class="nav-logo-text">ORBITA</span>
   </a>
-  <ul class="nav-links">
-    <li><a href="#produtos">Produtos</a></li>
-    <li><a href="#stack">Stack</a></li>
-    <li><a href="https://sagsite.vercel.app/" class="nav-cta">Acessar SAG →</a></li>
-  </ul>
+  <button class="theme-toggle" id="themeToggle" aria-label="Alternar tema">
+    <!-- Moon (dark mode indicator) -->
+    <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+    </svg>
+    <!-- Sun (light mode indicator) -->
+    <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="5"/>
+      <line x1="12" y1="1" x2="12" y2="3"/>
+      <line x1="12" y1="21" x2="12" y2="23"/>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+      <line x1="1" y1="12" x2="3" y2="12"/>
+      <line x1="21" y1="12" x2="23" y2="12"/>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+    </svg>
+  </button>
 </nav>
 
 <!-- Hero -->
 <section class="hero">
-  <div class="hero-glow"></div>
-
-  <!-- Orbital system -->
-  <div class="orbit-system">
-    <div class="orbit-ring orbit-ring-1"></div>
-    <div class="orbit-ring orbit-ring-2"></div>
-    <div class="orbit-ring orbit-ring-3"></div>
-    <div class="satellite sat-1"></div>
-    <div class="satellite sat-2"></div>
-    <div class="satellite sat-3"></div>
-    <div class="planet"></div>
+  <div class="hero-label">
+    <div class="hero-label-dot"></div>
+    Robótica Educacional · v2026
   </div>
-
-  <div class="hero-content">
-    <div class="hero-tag">
-      <div class="hero-tag-dot"></div>
-      Plataforma de Robótica Educacional
-    </div>
-    <h1 class="hero-title"><span>ORBITA</span></h1>
-    <p class="hero-sub">
-      Ferramentas de ensino e gestão de aulas.
-    </p>
-    <div class="hero-actions">
-      <a href="#produtos" class="btn-hero-primary">
-        ⬇ Baixar Bloquin
-      </a>
-      <a href="https://sagsite.vercel.app/" class="btn-hero-secondary">
-        Acessar SAG →
-      </a>
-    </div>
-  </div>
-
-  <div class="scroll-hint">
-    <span>EXPLORAR</span>
-    <div class="scroll-hint-bar"></div>
+  <h1 class="hero-title"><span class="hero-title-accent">ORBITA</span></h1>
+  <p class="hero-sub">
+    Hub central das ferramentas de ensino e gestão de aulas de robótica.
+  </p>
+  <div class="hero-actions">
+    <a href="https://www.mediafire.com/file/7d16s6q8xdw4ba3/bloquin.exe/file" class="btn-primary" target="_blank">
+      ↓ Baixar Bloquin
+    </a>
+    <a href="https://sagsite.vercel.app/" class="btn-secondary" target="_blank">
+      Acessar SAG →
+    </a>
   </div>
 </section>
 
 <!-- Products -->
-<section class="section" id="produtos">
-  <div class="section-label">// produtos</div>
-  <h2 class="section-title">Dois ambientes, um ecossistema</h2>
-  <p class="section-sub">O Bloquin é usado pelos alunos em sala. O SAG é o painel de gestão do professor e do administrador.</p>
+<div class="products" id="produtos">
+  <div class="block-label">produtos</div>
 
   <div class="products-grid">
 
     <!-- Bloquin -->
-    <div class="product-card bloquin">
-      <div class="card-header">
+    <div class="product-card bloquin-card">
+      <div class="card-top">
         <div class="card-icon">
-          <img src="assets/Logo_Bloquin.png" alt="Bloquin logo">
+          <img src="assets/Logo_Bloquin.png" alt="Bloquin">
         </div>
-        <div>
-          <div class="card-name">Bloquin</div>
-          <div class="card-tagline">Editor de programação em blocos</div>
-        </div>
+        <span class="card-badge badge-orange">DESKTOP</span>
       </div>
+
+      <div class="card-name">Bloquin</div>
+      <div class="card-tagline">Editor de programação em blocos</div>
+
       <p class="card-desc">
-        Ambiente de programação visual para alunos. Arrastar, encaixar e compilar para Arduino ou ESP32 — sem escrever uma linha de código.
+        Ambiente de programação visual para alunos. Arrasta, encaixa e compila para Arduino ou ESP32 — sem escrever uma linha de código.
       </p>
+
       <div class="card-features">
-        <div class="card-feature">
-          <div class="feature-dot"></div>
-          Blocos visuais com Blockly
-        </div>
-        <div class="card-feature">
-          <div class="feature-dot"></div>
-          Compilação para Arduino e ESP32
-        </div>
-        <div class="card-feature">
-          <div class="feature-dot"></div>
-          Visualização do código C++ em tempo real
-        </div>
-        <div class="card-feature">
-          <div class="feature-dot"></div>
-          Trilhas de aprendizagem integradas
-        </div>
+        <span class="card-feature">Blocos visuais com Blockly</span>
+        <span class="card-feature">Compilação para Arduino e ESP32</span>
+        <span class="card-feature">Código C++ em tempo real</span>
+        <span class="card-feature">Trilhas de aprendizagem integradas</span>
       </div>
-      <div class="card-specs">
-        <span class="spec">Windows 10+</span>
-        <span class="spec">64-bit</span>
-        <span class="spec">~18 MB</span>
+
+      <div class="card-meta">
+        <span class="meta-tag">Windows 10+</span>
+        <span class="meta-tag">64-bit</span>
+        <span class="meta-tag">~18 MB</span>
+        <span class="meta-tag">Tauri 2</span>
       </div>
+
+      <div class="card-divider"></div>
+
       <a href="https://www.mediafire.com/file/7d16s6q8xdw4ba3/bloquin.exe/file" class="btn-card" target="_blank" rel="noopener">
-        Baixar Bloquin
+        ↓ BAIXAR BLOQUIN
       </a>
     </div>
 
     <!-- SAG -->
-    <div class="product-card sag">
-      <div class="card-header">
+    <div class="product-card sag-card">
+      <div class="card-top">
         <div class="card-icon">
-          <img src="assets/logo_SAG.png" alt="SAG logo">
+          <img src="assets/logo_SAG.png" alt="SAG">
         </div>
-        <div>
-          <div class="card-name">SAG</div>
-          <div class="card-tagline">Sistema de Aulas e Gestão</div>
-        </div>
+        <span class="card-badge badge-blue">WEB</span>
       </div>
+
+      <div class="card-name">SAG</div>
+      <div class="card-tagline">Sistema de Aulas e Gestão</div>
+
       <p class="card-desc">
-        Painel web para professores e administradores. Gerencie turmas, registre chamadas, acompanhe horas e distribua conteúdo pedagógico.
+        Painel para professores e administradores. Gerencie turmas, registre chamadas, acompanhe horas e distribua conteúdo pedagógico.
       </p>
+
       <div class="card-features">
-        <div class="card-feature">
-          <div class="feature-dot"></div>
-          Chamada inteligente por horário
-        </div>
-        <div class="card-feature">
-          <div class="feature-dot"></div>
-          Controle de horas e pagamento
-        </div>
-        <div class="card-feature">
-          <div class="feature-dot"></div>
-          Cronograma e gestão de turmas
-        </div>
-        <div class="card-feature">
-          <div class="feature-dot"></div>
-          Controle de acesso por papel (Admin / Professor)
-        </div>
+        <span class="card-feature">Chamada por horário e turma</span>
+        <span class="card-feature">Controle de horas e pagamento</span>
+        <span class="card-feature">Cronograma e gestão de turmas</span>
+        <span class="card-feature">Controle de acesso Admin / Professor</span>
       </div>
-      <div class="card-specs">
-        <span class="spec">Acesso web</span>
-        <span class="spec">Qualquer navegador</span>
+
+      <div class="card-meta">
+        <span class="meta-tag">Acesso web</span>
+        <span class="meta-tag">Qualquer navegador</span>
+        <span class="meta-tag">Next.js</span>
       </div>
-      <a href="https://sagsite.vercel.app/" class="btn-card">
-        Acessar SAG
+
+      <div class="card-divider"></div>
+
+      <a href="https://sagsite.vercel.app/" class="btn-card" target="_blank">
+        → ACESSAR SAG
       </a>
     </div>
 
   </div>
-</section>
+</div>
 
 <!-- Stack -->
-<div class="section-divider"></div>
 <div class="stack-section" id="stack">
-  <div style="padding: 60px 0 32px">
-    <div class="section-label">// stack técnica</div>
-  </div>
-  <div class="stack-grid">
-    <div class="stack-item">
-      <span class="stack-key">Bloquin</span>
-      <span class="stack-val">Tauri 2 + React + Rust</span>
-    </div>
-    <div class="stack-item">
-      <span class="stack-key">SAG</span>
-      <span class="stack-val">Next.js + TypeScript</span>
-    </div>
-    <div class="stack-item">
-      <span class="stack-key">Banco de dados</span>
-      <span class="stack-val">Supabase / PostgreSQL</span>
-    </div>
-    <div class="stack-item">
-      <span class="stack-key">Plataforma</span>
-      <span class="stack-val">Windows 10+ (64-bit)</span>
+  <div class="stack-inner">
+    <div class="block-label">stack técnica</div>
+    <div class="stack-row">
+      <div class="stack-cell">
+        <span class="stack-key">Bloquin</span>
+        <span class="stack-val">Tauri 2 + React + Rust</span>
+      </div>
+      <div class="stack-cell">
+        <span class="stack-key">SAG</span>
+        <span class="stack-val">Next.js + TypeScript</span>
+      </div>
+      <div class="stack-cell">
+        <span class="stack-key">Banco de dados</span>
+        <span class="stack-val">Supabase / PostgreSQL</span>
+      </div>
+      <div class="stack-cell">
+        <span class="stack-key">Plataforma</span>
+        <span class="stack-val">Windows 10+ · 64-bit</span>
+      </div>
     </div>
   </div>
 </div>
 
 <!-- Footer -->
 <footer>
-  <div class="footer-brand">
-    <div style="width:24px;height:24px;background:linear-gradient(135deg,#1A72E8,#0D3C8A);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;">🪐</div>
-    <span class="footer-brand-text">ORBITA</span>
+  <div class="footer-left">
+    <div class="footer-logo">
+      <svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="7" cy="7" r="2.5" stroke="#1A72E8" stroke-width="1.2"/>
+        <ellipse cx="7" cy="7" rx="6" ry="2.5" stroke="#1A72E8" stroke-width="0.8" stroke-opacity="0.5" transform="rotate(-30 7 7)"/>
+      </svg>
+    </div>
+    <span class="footer-name">ORBITA</span>
   </div>
   <span class="footer-copy">SAG · 2026</span>
 </footer>
 
 <script>
-  // ── STARS ──────────────────────────────────────────────────────
-  (function() {
-    const container = document.getElementById('stars');
-    for (let i = 0; i < 120; i++) {
-      const s = document.createElement('div');
-      s.className = 'star';
-      const size = Math.random() * 1.8 + 0.6;
-      s.style.cssText = `
-        width: ${size}px; height: ${size}px;
-        left: ${Math.random() * 100}%;
-        top: ${Math.random() * 100}%;
-        --d: ${3 + Math.random() * 5}s;
-        --delay: ${Math.random() * 6}s;
-        --peak: ${0.2 + Math.random() * 0.6};
-      `;
-      container.appendChild(s);
-    }
-  })();
+  const html = document.documentElement;
+  const toggle = document.getElementById('themeToggle');
 
-  // ── DOWNLOAD SIMULADO ──────────────────────────────────────────
-  function simDownload(e, app) {
-    e.preventDefault();
-    const btn = e.currentTarget;
-    const orig = btn.innerHTML;
-    btn.innerHTML = 'Preparando download...';
-    btn.style.opacity = '0.7';
-    setTimeout(() => {
-      btn.innerHTML = 'Download iniciado!';
-      setTimeout(() => {
-        btn.innerHTML = orig;
-        btn.style.opacity = '1';
-      }, 2500);
-    }, 1500);
-  }
+  if (localStorage.getItem('orbita-theme') === 'light') html.classList.add('light');
+
+  toggle.addEventListener('click', () => {
+    html.classList.toggle('light');
+    localStorage.setItem('orbita-theme', html.classList.contains('light') ? 'light' : 'dark');
+  });
 </script>
+
 </body>
 </html>
